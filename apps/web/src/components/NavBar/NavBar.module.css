@@ -1,0 +1,63 @@
+/* Sticky top navigation bar. */
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+  padding: var(--space-4) var(--space-5);
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-lg);
+  font-weight: 800;
+  color: var(--color-text);
+}
+
+.links {
+  display: flex;
+  gap: var(--space-4);
+  flex: 1;
+}
+
+.link {
+  position: relative;
+  color: var(--color-text-muted);
+  font-weight: 600;
+  padding: var(--space-2) 0;
+}
+
+.active {
+  color: var(--color-text);
+}
+
+.count {
+  position: absolute;
+  top: -4px;
+  right: -16px;
+  background: var(--color-primary);
+  color: #fff;
+  border-radius: 999px;
+  font-size: 11px;
+  padding: 0 6px;
+  font-weight: 700;
+}
+
+.right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+}
+
+.balance {
+  padding: var(--space-2) var(--space-4);
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}

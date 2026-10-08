@@ -1,0 +1,17 @@
+{
+  "name": "coin-vault",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Coin Vault — a virtual Gold Coin currency platform for a gaming products store.",
+  "scripts": {
+    "dev": "pnpm -r --parallel dev",
+    "build": "pnpm -r build",
+    "db:setup": "pnpm --filter @coin-vault/api db:setup",
+    "db:reset": "pnpm --filter @coin-vault/api db:reset",
+    "test": "pnpm --filter @coin-vault/api test"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "packageManager": "pnpm@11.8.0"
+}

@@ -1,0 +1,45 @@
+/* Wallet page: balance hero, coin packages, and ledger table. */
+.hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-6);
+}
+
+.heroLabel {
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-2);
+}
+
+.package {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  text-align: center;
+}
+
+.packageName {
+  font-weight: 700;
+  font-size: var(--text-lg);
+}
+
+.price {
+  color: var(--color-text-muted);
+}
+
+.ledger {
+  margin-top: var(--space-6);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.rowMeta {
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+}

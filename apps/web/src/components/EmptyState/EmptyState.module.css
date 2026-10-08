@@ -1,0 +1,17 @@
+/* Friendly placeholder shown when a list has no items. */
+.empty {
+  text-align: center;
+  padding: var(--space-8) var(--space-4);
+  color: var(--color-text-muted);
+}
+
+.icon {
+  font-size: 40px;
+  margin-bottom: var(--space-3);
+}
+
+.title {
+  color: var(--color-text);
+  font-size: var(--text-lg);
+  margin-bottom: var(--space-2);
+}

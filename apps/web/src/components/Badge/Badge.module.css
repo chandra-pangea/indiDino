@@ -1,0 +1,23 @@
+/* Small pill label used for categories and statuses. */
+.badge {
+  display: inline-block;
+  padding: 2px var(--space-3);
+  border-radius: 999px;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  background: var(--color-surface-2);
+  color: var(--color-text-muted);
+  border: 1px solid var(--color-border);
+}
+
+.success {
+  background: rgba(34, 197, 94, 0.15);
+  color: var(--color-success);
+  border-color: transparent;
+}
+
+.danger {
+  background: rgba(239, 68, 68, 0.15);
+  color: var(--color-danger);
+  border-color: transparent;
+}

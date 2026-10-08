@@ -1,0 +1,177 @@
+// Coin Vault database schema — SQLite via Prisma, designed to 3NF.
+// Enums are modelled as string columns (SQLite has no native enum) with values mirrored in src/common/enums.ts.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// A platform user. Authentication is out of scope — users are seeded and selected via the x-user-id header.
+model User {
+  id          String   @id @default(cuid())
+  displayName String
+  email       String   @unique
+  createdAt   DateTime @default(now())
+
+  wallet   Wallet?
+  cart     Cart?
+  payments Payment[]
+  orders   Order[]
+
+  @@map("users")
+}
+
+// One wallet per user; holds the Gold Coin balance. `version` powers optimistic locking for safe concurrent debits/credits.
+model Wallet {
+  id           String   @id @default(cuid())
+  userId       String   @unique
+  balanceCoins Int      @default(0)
+  version      Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  user         User                @relation(fields: [userId], references: [id])
+  transactions WalletTransaction[]
+
+  @@map("wallets")
+}
+
+// A purchasable bundle of coins (e.g. $20 -> 20 coins). Price is stored in cents to avoid float issues.
+model CoinPackage {
+  id        String  @id @default(cuid())
+  name      String
+  priceCents Int
+  coins     Int
+  isActive  Boolean @default(true)
+  sortOrder Int     @default(0)
+
+  payments Payment[]
+
+  @@map("coin_packages")
+}
+
+// Product category (SKIN / EMOTE / BATTLE_PASS) — extracted to its own table for 3NF.
+model ProductCategory {
+  id   String @id @default(cuid())
+  name String
+  slug String @unique
+
+  products Product[]
+
+  @@map("product_categories")
+}
+
+// A digital product in the catalog, priced in Gold Coins.
+model Product {
+  id          String  @id @default(cuid())
+  sku         String  @unique
+  name        String
+  description String
+  categoryId  String
+  priceCoins  Int
+  imageUrl    String
+  isActive    Boolean @default(true)
+  createdAt   DateTime @default(now())
+
+  category   ProductCategory @relation(fields: [categoryId], references: [id])
+  cartItems  CartItem[]
+  orderItems OrderItem[]
+
+  @@map("products")
+}
+
+// A coin-purchase payment intent. `idempotencyKey` makes intent creation safe against retries.
+model Payment {
+  id             String   @id @default(cuid())
+  userId         String
+  coinPackageId  String
+  amountCents    Int
+  coins          Int
+  status         String   @default("PENDING")
+  idempotencyKey String   @unique
+  providerRef    String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  user        User        @relation(fields: [userId], references: [id])
+  coinPackage CoinPackage @relation(fields: [coinPackageId], references: [id])
+
+  @@map("payments")
+}
+
+// One active cart per user.
+model Cart {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user  User       @relation(fields: [userId], references: [id])
+  items CartItem[]
+
+  @@map("carts")
+}
+
+// A line item in a cart; (cartId, productId) is unique so quantity is merged per product.
+model CartItem {
+  id        String @id @default(cuid())
+  cartId    String
+  productId String
+  quantity  Int    @default(1)
+
+  cart    Cart    @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id])
+
+  @@unique([cartId, productId])
+  @@map("cart_items")
+}
+
+// A placed order. `idempotencyKey` guards against double submission (retry / double-click).
+model Order {
+  id             String   @id @default(cuid())
+  userId         String
+  status         String   @default("PENDING")
+  totalCoins     Int
+  idempotencyKey String   @unique
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  user  User        @relation(fields: [userId], references: [id])
+  items OrderItem[]
+
+  @@map("orders")
+}
+
+// A line item in an order; unitPriceCoins is snapshotted at order time for historical accuracy.
+model OrderItem {
+  id             String @id @default(cuid())
+  orderId        String
+  productId      String
+  quantity       Int
+  unitPriceCoins Int
+
+  order   Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id])
+
+  @@map("order_items")
+}
+
+// Append-only ledger of every wallet balance change, for auditability.
+model WalletTransaction {
+  id            String   @id @default(cuid())
+  walletId      String
+  type          String
+  amountCoins   Int
+  balanceAfter  Int
+  referenceType String
+  referenceId   String
+  createdAt     DateTime @default(now())
+
+  wallet Wallet @relation(fields: [walletId], references: [id])
+
+  @@map("wallet_transactions")
+}

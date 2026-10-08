@@ -1,0 +1,10 @@
+packages:
+  - "apps/*"
+
+# Allow these dependencies to run install/build scripts (Prisma generates its client in a postinstall).
+allowBuilds:
+  "@nestjs/core": true
+  "@prisma/client": true
+  "@prisma/engines": true
+  prisma: true
+  esbuild: true
