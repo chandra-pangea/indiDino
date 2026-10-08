@@ -85,14 +85,16 @@ export function CartPage() {
             <p className={styles.warning}>Not enough coins. Top up your wallet to continue.</p>
           ) : null}
 
-          <Button block disabled={!canAfford || isPlacing} onClick={handlePlaceOrder}>
-            {isPlacing ? 'Placing…' : 'Place order'}
-          </Button>
-          {!canAfford ? (
-            <Button block variant="secondary" onClick={() => navigate('/wallet')}>
-              Buy coins
+          <div className={styles.actions}>
+            <Button block disabled={!canAfford || isPlacing} onClick={handlePlaceOrder}>
+              {isPlacing ? 'Placing…' : 'Place order'}
             </Button>
-          ) : null}
+            {!canAfford ? (
+              <Button block variant="secondary" onClick={() => navigate('/wallet')}>
+                Buy coins
+              </Button>
+            ) : null}
+          </div>
         </Card>
       </div>
     </div>

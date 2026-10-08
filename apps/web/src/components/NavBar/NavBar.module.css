@@ -1,11 +1,12 @@
-/* Sticky top navigation bar. */
+/* Sticky top navigation bar; wraps onto multiple rows on narrow screens. */
 .nav {
   position: sticky;
   top: 0;
   z-index: 10;
   display: flex;
   align-items: center;
-  gap: var(--space-5);
+  flex-wrap: wrap;
+  gap: var(--space-3) var(--space-5);
   padding: var(--space-4) var(--space-5);
   background: var(--color-surface);
   border-bottom: 1px solid var(--color-border);
@@ -23,7 +24,8 @@
 .links {
   display: flex;
   gap: var(--space-4);
-  flex: 1;
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
 .link {
@@ -52,7 +54,29 @@
 .right {
   display: flex;
   align-items: center;
-  gap: var(--space-5);
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--space-3);
+}
+
+/* On phones, let the brand and links share the first row and push nav items to wrap cleanly. */
+@media (max-width: 560px) {
+  .nav {
+    gap: var(--space-3);
+  }
+  .brand {
+    flex: 1 1 100%;
+  }
+  .links {
+    order: 3;
+    flex: 1 1 100%;
+    justify-content: space-between;
+    gap: var(--space-2);
+  }
+  .right {
+    flex: 1 1 100%;
+    justify-content: space-between;
+  }
 }
 
 .balance {
